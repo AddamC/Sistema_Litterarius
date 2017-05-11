@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import QDialog, QMdiSubWindow, QTableView
 import Banco
 import MtrLivro_ui
 
+# TODO: Função doubleClicked_table()
+# TODO: Função carregarDados()
 
 class MtrLivro(QDialog):
     def __init__(self):
@@ -97,10 +99,10 @@ class MtrLivro(QDialog):
         db.close()
 
     def carregarDados(self):
-        autor = Banco.selectEditoraById(1)
+        livro = Banco.selectLivroById(1)
 
-        self.ui.txtId.setText(str(autor[0]))
-        self.ui.txtTitulo.setText(str(autor[1]))
+        self.ui.txtId.setText(str(livro[0]))
+        self.ui.txtTitulo.setText(str(livro[1]))
 
     def doubleClicked_table(self):
         index = self.ui.tableView.selectedIndexes ()

@@ -97,7 +97,7 @@ class MtrFuncionario(QDialog):
         db.close()
 
     def carregarDados(self):
-        autor = Banco.selectAutorById(1)
+        autor = Banco.selectFuncionarioById(1)
 
         self.ui.txtId.setText(str(autor[0]))
         self.ui.txtNome.setText(str(autor[1]))

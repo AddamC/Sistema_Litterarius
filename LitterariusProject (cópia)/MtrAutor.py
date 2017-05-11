@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QDialog, QMdiSubWindow, QTableView
 import Banco
 import MtrAutor_ui
 
-
+# TODO: Update, Delete, Cancel 
 class MtrAutor(QDialog):
     def __init__(self):
         super(MtrAutor, self).__init__()
