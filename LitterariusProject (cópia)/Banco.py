@@ -1,163 +1,7 @@
 import sqlite3
 import traceback
 
-
-def selectAllAutores():
-    banco = sqlite3.connect ("Litterarius.db")
-    cursor = banco.cursor()
-    autores = cursor.execute("SELECT * FROM autores")
-    listaAutores = []
-
-    for i in autores:
-        listaAutores.append(i)
-    banco.close()
-    return listaAutores
-
-def selectAllEDitoras():
-    banco = sqlite3.connect("Litterarius.db")
-    cursor = banco.cursor()
-    editoras = cursor.execute("SELECT * FROM editoras")
-    listaEditoras = []
-
-    for i in editoras:
-        listaEditoras.append(i)
-    banco.close()
-    return listaEditoras
-
-def selectAllGeneros():
-    banco = sqlite3.connect ("Litterarius.db")
-    cursor = banco.cursor ()
-    generos = cursor.execute ("SELECT * FROM editoras")
-    listaGeneros = []
-
-    for i in generos:
-        listaGeneros.append (i)
-    banco.close ()
-    return listaGeneros
-	
-def selectAllLivros():
-def selectAllClientes():
-def selectAllFuncionarios():
-def selectAllFornecedores():
-def selectAllTransportadoras():
-
-def selectAutorById(id):
-    autor = []
-    banco = sqlite3.connect("Litterarius.db")
-    cursor = banco.cursor()
-    query = "SELECT * FROM autores WHERE autor_id=" + str(id)
-    dados = cursor.execute(query)
-    for i in dados.fetchall():
-        autor.append(i)
-    banco.close()
-
-    return autor[0]
-
-def selectEditoraById(id):
-    editora = []
-    banco = sqlite3.connect("Litterarius.db")
-    cursor = banco.cursor()
-    query = "SELECT * FROM editoras WHERE editora_id=" + str(id)
-    dados = cursor.execute(query)
-    for i in dados.fetchall():
-        editora.append(i)
-    banco.close()
-
-    return editora[0]
-
-def selectGeneroById(id):
-    genero = []
-    banco = sqlite3.connect("Litterarius.db")
-    cursor = banco.execute()
-    query = "SELECT * FROM generos WHERE genero_id=" + str(id)
-    dados = cursor.execute(query)
-    for i in dados.fetchall():
-        genero.append(i)
-    banco.close()
-
-    return genero[0]
-
-def selectLivrosById(id):
-    livro = []
-    banco = sqlite3.connect ("Litterarius.db")
-    cursor = banco.execute ()
-    query = "SELECT * FROM livros WHERE livro_id=" + str (id)
-    dados = cursor.execute (query)
-    for i in dados.fetchall ():
-        livro.append (i)
-    banco.close ()
-
-    return livro[0]
-
-# def selectLivroById:
-# def selectClienteById:
-# def selectFuncionarioById:
-# def selectFornecedorById:
-# def selectTransporadoraById:
-
-def inserirAutor(valor):
-    try:
-        banco = sqlite3.connect("Litterarius.db")
-        banco.execute("INSERT INTO autores(descricao) VALUES(?);", (valor,))
-        banco.commit()
-        banco.close()
-        print("autor inserido com sucesso")
-    except:
-        print("erro ao inserir autor")
-        traceback.print_exc ()
-
-
-
-def inserirEditora(valor):
-    try:
-        banco = sqlite3.connect('Litterarius.db')
-        cursor = banco.cursor()
-        banco.execute("INSERT INTO editoras(descricao) VALUES(?);", (valor,))
-        banco.commit()
-        banco.close()
-        print("editora inserido com sucesso")
-    except:
-        print("erro ao inserir editora")
-        traceback.print_exc ()
-
-def inserirGenero(valor):
-    try:
-        banco = sqlite3.connect ('Litterarius.db')
-        cursor = banco.cursor ()
-        banco.execute("INSERT INTO generos(descricao VALUES(?);", (valor,))
-        banco.commit()
-        banco.close()
-        print("genero inserido com sucesso")
-    except:
-        print("erro ao inserir genero")
-        traceback.print_exc ()
-
-def inserirLivro(titulo, editora, isbn, qtde, vlr):
-    try:
-        banco = sqlite3.connect ('Litterarius.db')
-        cursor = banco.cursor ()
-        banco.execute("INSERT INTO livros(titulo, editora_fk, ISBN, qtde_estoque, vl_unitario)"
-                      " VALUES(?,?,?,?,?);",(titulo, editora, isbn, qtde, vlr,))
-        print("livro inserido com sucesso")
-        banco.commit()
-        banco.close()
-    except:
-        print("erro ao inserir livro")
-        traceback.print_exc ()
-
-def inserirCliente():
-def inserirFornecedor():
-def inserirFuncionario():
-def inserirTransportadoras():
-
-try:
-    banco = sqlite3.connect ('Litterarius.db')
-    cursor = banco.cursor ()
-    banco.execute("PRAGMA foreign_keys = ON;")
-    banco.close()
-    print("ok")
-except:
-    print("n deu certo")
+# TODO incluir metodos para alterar e excluir no Banco
 
 def criarTabelas():
     try:
@@ -222,7 +66,7 @@ def criarTabelas():
     try:
         banco.execute ("CREATE TABLE fornecedores("
                        "fornecedor_id    INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
-                       "descricao        VARCHAR(100),"
+                       "fornecedor       VARCHAR(100),"
                        "CNPJ             VARCHAR(13));")
         print("tabela fornecedores criada com sucesso")
     except:
@@ -231,7 +75,7 @@ def criarTabelas():
     try:
         banco.execute ("CREATE TABLE transportadoras("
                        "transportadora_id    INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
-                       "descricao            VARCHAR(100),"
+                       "transportadora       VARCHAR(100),"
                        "CNPJ                 VARCHAR(13));")
         print("tabela transportadoras criada com sucesso")
     except:
@@ -344,6 +188,294 @@ def criarTabelas():
         print("tabela pagamentos criada com sucesso")
     except:
         print("erro ao criar tabela pagamentos")
+
+def selectAll(tabela):
+	banco = sqlite3.connect ("Litterarius.db")
+    cursor = banco.cursor()
+    valores = cursor.execute("SELECT * FROM" + str(tabela))
+    listaValores = []
+
+    for i in valores:
+        listaValores.append(i)
+    banco.close()
+    return listaValores
+
+def selectAllAutores():
+    banco = sqlite3.connect ("Litterarius.db")
+    cursor = banco.cursor()
+    autores = cursor.execute("SELECT * FROM autores")
+    listaAutores = []
+
+    for i in autores:
+        listaAutores.append(i)
+    banco.close()
+    return listaAutores
+
+def selectAllEditoras():
+    banco = sqlite3.connect("Litterarius.db")
+    cursor = banco.cursor()
+    editoras = cursor.execute("SELECT * FROM editoras")
+    listaEditoras = []
+
+    for i in editoras:
+        listaEditoras.append(i)
+    banco.close()
+    return listaEditoras
+
+def selectAllGeneros():
+    banco = sqlite3.connect ("Litterarius.db")
+    cursor = banco.cursor ()
+    generos = cursor.execute ("SELECT * FROM editoras")
+    listaGeneros = []
+
+    for i in generos:
+        listaGeneros.append (i)
+    banco.close ()
+    return listaGeneros
+	
+# def selectAllLivros():
+# def selectAllClientes():
+# def selectAllFuncionarios():
+# def selectAllFornecedores():
+# def selectAllTransportadoras():
+
+def selectById(id):
+	valor = []
+    banco = sqlite3.connect("Litterarius.db")
+    cursor = banco.cursor()
+    query = "SELECT * FROM " + str(tabela) + " WHERE " + str(tabela) + "_id=" + str(id)
+    valores = cursor.execute(query)
+    for i in valores.fetchall():
+        valor.append(i)
+    banco.close()
+
+	print("VALORES: " + str(valores))
+	print("VALOR: " + str(valor))
+	
+    return valor[0]
+
+def selectAutorById(id):
+    autor = []
+    banco = sqlite3.connect("Litterarius.db")
+    cursor = banco.cursor()
+    query = "SELECT * FROM autores WHERE autor_id=" + str(id)
+    dados = cursor.execute(query)
+    for i in dados.fetchall():
+        autor.append(i)
+    banco.close()
+
+    return autor[0]
+
+def selectEditoraById(id):
+    editora = []
+    banco = sqlite3.connect("Litterarius.db")
+    cursor = banco.cursor()
+    query = "SELECT * FROM editoras WHERE editora_id=" + str(id)
+    dados = cursor.execute(query)
+    for i in dados.fetchall():
+        editora.append(i)
+    banco.close()
+
+    return editora[0]
+
+def selectGeneroById(id):
+    genero = []
+    banco = sqlite3.connect("Litterarius.db")
+    cursor = banco.execute()
+    query = "SELECT * FROM generos WHERE genero_id=" + str(id)
+    dados = cursor.execute(query)
+    for i in dados.fetchall():
+        genero.append(i)
+    banco.close()
+
+    return genero[0]
+
+def selectLivrosById(id):
+    livro = []
+    banco = sqlite3.connect ("Litterarius.db")
+    cursor = banco.execute ()
+    query = "SELECT * FROM livros WHERE livro_id=" + str (id)
+    dados = cursor.execute (query)
+    for i in dados.fetchall ():
+        livro.append (i)
+    banco.close ()
+
+    return livro[0]
+
+# def selectLivroById:
+# def selectClienteById:
+# def selectFuncionarioById:
+# def selectFornecedorById:
+# def selectTransporadoraById:
+
+def inserirAutor(valor):
+    try:
+        banco = sqlite3.connect("Litterarius.db")
+        banco.execute("INSERT INTO autores(descricao) VALUES(?);", (valor,))
+        banco.commit()
+        banco.close()
+        print("autor inserido com sucesso")
+    except:
+        print("erro ao inserir autor")
+        traceback.print_exc ()
+
+
+
+def inserirEditora(valor):
+    try:
+        banco = sqlite3.connect('Litterarius.db')
+        cursor = banco.cursor()
+        banco.execute("INSERT INTO editoras(descricao) VALUES(?);", (valor,))
+        banco.commit()
+        banco.close()
+        print("editora inserido com sucesso")
+    except:
+        print("erro ao inserir editora")
+        traceback.print_exc ()
+
+def inserirGenero(valor):
+    try:
+        banco = sqlite3.connect ('Litterarius.db')
+        cursor = banco.cursor ()
+        banco.execute("INSERT INTO generos(descricao VALUES(?);", (valor,))
+        banco.commit()
+        banco.close()
+        print("genero inserido com sucesso")
+    except:
+        print("erro ao inserir genero")
+        traceback.print_exc ()
+
+# def inserirLivro(titulo, editora, isbn, qtde, vlr, genero, autor):
+    # try:
+        # banco = sqlite3.connect ('Litterarius.db')
+        # cursor = banco.cursor ()
+        # banco.execute("INSERT INTO livros(titulo, editora_fk, ISBN, qtde_estoque, vl_unitario)"
+                      # " VALUES(?,?,?,?,?);",(titulo, editora, isbn, qtde, vlr,))
+		# query = "INSERT INTO livros_generos VALUES ("
+		# + "(SELECT livros_id FROM livros WHERE titulo=" + str(titulo) "),"
+		# + str(genero) + ");"
+		# query = "INSERT INTO livros_autores VALUES ("
+		# + "(SELECT livros_id FROM livros WHERE titulo=" + str(titulo) "),"
+		# + str(autor) + ");"
+        # print("livro inserido com sucesso")
+        # banco.commit()
+        # banco.close()
+    # except:
+        # print("erro ao inserir livro")
+        # traceback.print_exc ()
+		
+def inserirLivro(titulo, editora, isbn, qtde, vlr, genero, autor):
+    try:
+        banco = sqlite3.connect ('Litterarius.db')
+        cursor = banco.cursor ()
+        banco.execute("INSERT INTO livros(titulo, editora_fk, ISBN, qtde_estoque, vl_unitario)"
+                      " VALUES(?,?,?,?,?);",(titulo, editora, isbn, qtde, vlr,))
+		banco.execute("INSERT INTO livros_generos VALUES (SELECT livros_id FROM livros WHERE titulo=?),?);",
+						(titulo, genero,))
+		banco.execute("INSERT INTO livros_autores VALUES ((SELECT livros_id FROM livros WHERE titulo=?),?);",
+						(titulo, autor))
+        print("livro inserido com sucesso")
+        banco.commit()
+        banco.close()
+    except:
+        print("erro ao inserir livro")
+        traceback.print_exc ()
+
+def inserirCliente(nome, cpf, telefone, endereco, rg):
+	try:
+        banco = sqlite3.connect ('Litterarius.db')
+        cursor = banco.cursor ()
+        banco.execute("INSERT INTO clientes(nome, cpf, telefone, endereco, rg)"
+                      " VALUES(?,?,?,?,?);",(nome, cpf, telefone, endereco, rg,))
+        print("cliente inserido com sucesso")
+        banco.commit()
+        banco.close()
+    except:
+        print("erro ao inserir cliente")
+        traceback.print_exc ()
+		
+def inserirTransportadoras(transportadora, cnpj):
+	try:
+        banco = sqlite3.connect ('Litterarius.db')
+        cursor = banco.cursor ()
+        banco.execute("INSERT INTO transportadoras(transportadora, cnpj)"
+                      " VALUES(?,?,?,?,?);",(transportadora, cnpj))
+        print("transportadora inserida com sucesso")
+        banco.commit()
+        banco.close()
+    except:
+        print("erro ao inserir transportadora")
+        traceback.print_exc ()
+try:
+    banco = sqlite3.connect ('Litterarius.db')
+    cursor = banco.cursor ()
+    banco.execute("PRAGMA foreign_keys = ON;")
+    banco.close()
+    print("ok")
+except:
+    print("n deu certo")
+	
+def inserirFornecedor(fornecedor, cnpj, transportadora):
+	try:
+        banco = sqlite3.connect ('Litterarius.db')
+        cursor = banco.cursor ()
+        banco.execute("INSERT INTO fornecedores(fornecedor, cnpj)"
+                      " VALUES(?,?);",(fornecedor, cnpj,))
+		banco.execute("INSERT INTO fornecedores_transportadoras VALUES ((SELECT fornecedores_id FROM fornecedores WHERE fornecedor=?),?);",
+					   (fornecedor, transportadora))
+        print("fornecedor inserido com sucesso")
+        banco.commit()
+        banco.close() 
+    except:
+        print("erro ao inserir fornecedor")
+        traceback.print_exc ()
+		
+def inserirFuncionario(nome, cpf, telefone, endereco, rg, salario, turno):
+	try:
+        banco = sqlite3.connect ('Litterarius.db')
+        cursor = banco.cursor ()
+        banco.execute("INSERT INTO funcionarios(nome, cpf, telefone, endereco, rg, salario, turno)"
+                      " VALUES(?,?,?,?,?);",(nome, cpf, telefone, endereco, rg, salario, turno,))
+        print("funcionario inserido com sucesso")
+        banco.commit()
+        banco.close()
+    except:
+        print("erro ao inserir funcionario")
+        traceback.print_exc ()
+		
+# TODO Updates
+
+def updateAutor(id, autor):
+	try:
+        banco = sqlite3.connect ('Litterarius.db')
+        cursor = banco.cursor ()
+        banco.execute("UPDATE " + str(tabela) + " SET autor=? WHERE autores_id=?",(autor,id,)
+        print("autor alterado com sucesso")
+        banco.commit()
+        banco.close()
+    except:
+        print("erro ao excluir autor")
+        traceback.print_exc ()
+# def updateGenero():
+# def updateEditora():
+# def updateLivro():
+# def updateCliente():
+# def updateFuncionario():
+# def updateTransportadora():
+# def updateFornecedor():
+
+def excluir(id, tabela):
+	try:
+        banco = sqlite3.connect ('Litterarius.db')
+        cursor = banco.cursor ()
+        banco.execute("DELETE FROM ? WHERE ?_id=?",(tabela, tabela, id,)
+        print(str(tabela) + ": valor excluido com sucesso")
+        banco.commit()
+        banco.close()
+    except:
+        print(str(tabela) + ": erro ao excluir valor")
+        traceback.print_exc ()
+
 
 # criarTabelas()
 
