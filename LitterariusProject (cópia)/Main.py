@@ -1,6 +1,5 @@
-from PyQt5.QtWidgets import QApplication, QDialog
+from PyQt5.QtWidgets import QApplication
 
-import Litterarius_ui
 from LitterariusHome import LitterariusHome
 
 if __name__ == "__main__":
