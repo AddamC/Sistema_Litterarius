@@ -1,5 +1,5 @@
 from PyQt5.QtSql import QSqlDatabase, QSqlTableModel
-from PyQt5.QtWidgets import QDialog, QTableView
+from PyQt5.QtWidgets import QDialog, QTableView, QAbstractItemView
 
 import Banco
 from UI import MtrFornecedor_ui
@@ -16,9 +16,10 @@ class MtrFornecedor(QDialog):
         self.ui.txtCNPJ.setEnabled (False)
         self.ui.txtFornecedor.setEnabled (False)
 
+
+        self.ui.tableView.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.carregarTable ()
         self.carregarDados ()
-
         self.habilitarJanelas (True)
 
         # Eventos
@@ -27,14 +28,14 @@ class MtrFornecedor(QDialog):
         self.ui.btnSalvar.clicked.connect (self.clickedSalvar)
         self.ui.btnCancelar.clicked.connect (self.clickedCancelar)
         self.ui.tableView.setSelectionBehavior (QTableView.SelectRows);
-        self.ui.tableView.doubleClicked.connect (self.doubleClicked_table)
+        self.ui.tableView.clicked.connect (self.clicked_table)
 
 
     def habilitarJanelas(self, ativo):
         self.ui.btnNovo.setEnabled(ativo)
         self.ui.btnAlterar.setEnabled(ativo)
         self.ui.btnCancelar.setEnabled(not ativo)
-        self.ui.btnExcluir.setEnabled(not ativo)
+        self.ui.btnExcluir.setEnabled(ativo)
         self.ui.btnSalvar.setEnabled(not ativo)
         # txtId.setEnabled(not ativo)
         self.ui.txtFornecedor.setEnabled(not ativo)
@@ -42,7 +43,8 @@ class MtrFornecedor(QDialog):
 
     def limparJanelas(self):
         self.ui.txtId.setText("")
-        self.ui.txtAutor.setText("")
+        self.ui.txtFornecedor.setText("")
+        self.ui.txtCNPJ.setText("")
 
     def clickedNovo(self):
         self.habilitarJanelas(False)
@@ -88,7 +90,7 @@ class MtrFornecedor(QDialog):
         self.ui.txtFornecedor.setText(str(autor))
         # self.ui.txtCNPJ.setText (str (autor[2]))
 
-    def doubleClicked_table(self):
+    def clicked_table(self):
         index = self.ui.tableView.selectedIndexes ()
         self.ui.txtId.setText (str (self.ui.tableView.model().data(index[0])))
         self.ui.txtFornecedor.setText (str (self.ui.tableView.model().data(index[1])))

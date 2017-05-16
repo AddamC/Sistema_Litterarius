@@ -28,7 +28,7 @@ class MtrAutor(QDialog):
         self.ui.btnCancelar.clicked.connect (self.clickedCancelar)
         self.ui.btnExcluir.clicked.connect(self.clickedExcluir)
         self.ui.tableView.setSelectionBehavior (QTableView.SelectRows);
-        self.ui.tableView.clicked.connect (self.doubleClicked_table)
+        self.ui.tableView.clicked.connect (self.clicked_table)
 
 
     def habilitarJanelas(self, ativo):
@@ -91,7 +91,7 @@ class MtrAutor(QDialog):
         self.ui.txtId.setText(str(autor))
         self.ui.txtAutor.setText(str(autor))
 
-    def doubleClicked_table(self):
+    def clicked_table(self):
         index = self.ui.tableView.selectedIndexes ()
         self.ui.txtId.setText (str (self.ui.tableView.model().data(index[0])))
         self.ui.txtAutor.setText (str (self.ui.tableView.model().data(index[1])))

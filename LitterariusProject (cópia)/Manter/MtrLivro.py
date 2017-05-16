@@ -109,5 +109,6 @@ class MtrLivro(QDialog):
         index = self.ui.tableView.selectedIndexes ()
         # livros = Banco.selectLivrosById(index)
         # print(str(index))
+        print(index)
         self.ui.txtId.setText (str (self.ui.tableView.model().data(index[0])))
         self.ui.txtTitulo.setText (str (self.ui.tableView.model().data(index[1])))

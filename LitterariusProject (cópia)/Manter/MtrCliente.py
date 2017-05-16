@@ -1,5 +1,5 @@
 from PyQt5.QtSql import QSqlDatabase, QSqlTableModel
-from PyQt5.QtWidgets import QDialog, QTableView
+from PyQt5.QtWidgets import QDialog, QTableView, QAbstractItemView
 
 import Banco
 from UI import MtrCliente_ui
@@ -19,6 +19,7 @@ class MtrCliente(QDialog):
         self.ui.txtRg.setEnabled(False)
         self.ui.txtEndereco.setEnabled(False)
 
+        self.ui.tableView.setEditTriggers (QAbstractItemView.NoEditTriggers)
         self.carregarTable ()
         self.carregarDados ()
 
@@ -29,15 +30,16 @@ class MtrCliente(QDialog):
         self.ui.btnAlterar.clicked.connect (self.clickedAlterar)
         self.ui.btnSalvar.clicked.connect (self.clickedSalvar)
         self.ui.btnCancelar.clicked.connect (self.clickedCancelar)
+        self.ui.btnExcluir.clicked.connect (self.clickedExcluir)
         self.ui.tableView.setSelectionBehavior (QTableView.SelectRows);
-        self.ui.tableView.doubleClicked.connect (self.doubleClicked_table)
+        self.ui.tableView.clicked.connect (self.clicked_table)
 
 
     def habilitarJanelas(self, ativo):
         self.ui.btnNovo.setEnabled(ativo)
         self.ui.btnAlterar.setEnabled(ativo)
         self.ui.btnCancelar.setEnabled(not ativo)
-        self.ui.btnExcluir.setEnabled(not ativo)
+        self.ui.btnExcluir.setEnabled(ativo)
         self.ui.btnSalvar.setEnabled(not ativo)
         # txtId.setEnabled(not ativo)
         self.ui.txtNome.setEnabled(not ativo)
@@ -63,13 +65,23 @@ class MtrCliente(QDialog):
     def clickedAlterar(self):
         valores=[]
         self.habilitarJanelas(False)
-        op = 'A'
+        self.op = 'A'
 
+    def clickedExcluir(self):
+        Banco.excluirCliente (self.ui.txtId.text ())
+        self.habilitarJanelas (True)
+        self.carregarTable ()
         # txtAutor.setText(str(selection[0]))
 
     def clickedSalvar(self):
         if self.op == 'N':
-            Banco.inserirCliente(self.ui.txtCliente.text()) # Passar parametros corretos de clientes
+            Banco.inserirCliente(self.ui.txtNome.text(), self.ui.txtCpf.text(),
+                                 self.ui.txtTelefone.text(), self.ui.txtEndereco.text(),
+                                 self.ui.txtRg.text())
+        elif self.op == 'A':
+            Banco.alterarAutor(self.ui.txtId.text(), self.ui.txtNome.text(),
+                               self.ui.txtCpf.text(), self.ui.txtTelefone.text(),
+                               self.ui.txtEndereco.text(), self.ui.txtRg.text())
         self.habilitarJanelas(True)
         self.carregarTable()
 
@@ -97,7 +109,7 @@ class MtrCliente(QDialog):
         self.ui.txtId.setText(str(cliente[0]))
         self.ui.txtNome.setText(str(cliente[1]))
 
-    def doubleClicked_table(self):
+    def clicked_table(self):
         index = self.ui.tableView.selectedIndexes ()
         self.ui.txtId.setText (str (self.ui.tableView.model().data(index[0])))
         self.ui.txtNome.setText (str (self.ui.tableView.model().data(index[1])))

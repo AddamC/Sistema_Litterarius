@@ -44,6 +44,7 @@ class Manter (QWidget):
         self.layoutManter.addWidget (self.btnFuncionario)
         self.layoutManter.addWidget (self.btnCliente)
         self.layoutManter.addWidget (self.btnFornecedor)
+        self.layoutManter.addWidget (self.btnTransportadora)
 
         self.setLayout(self.layoutManter)
 

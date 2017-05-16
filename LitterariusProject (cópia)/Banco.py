@@ -284,7 +284,7 @@ def selectEditoraById(id):
     cursor.close()
     banco.close()
 
-    return editora[0]
+    return editora
 
 def selectGeneroById(id):
     genero = []
@@ -297,7 +297,7 @@ def selectGeneroById(id):
     cursor.close()
     banco.close()
 
-    return genero[0]
+    return genero
 
 def selectLivroById(id):
     livro = []
@@ -386,7 +386,7 @@ def inserirEditora(valor):
     try:
         banco = sqlite3.connect('Litterarius.db')
         cursor = banco.cursor()
-        cursor.execute("INSERT INTO editoras(descricao) VALUES(?);", (valor,))
+        cursor.execute("INSERT INTO editoras(editora) VALUES(?);", (valor,))
         banco.commit()
         cursor.close()
         banco.close()
@@ -399,7 +399,7 @@ def inserirGenero(valor):
     try:
         banco = sqlite3.connect ('Litterarius.db')
         cursor = banco.cursor ()
-        cursor.execute("INSERT INTO generos(descricao VALUES(?);", (valor,))
+        cursor.execute("INSERT INTO generos(genero) VALUES(?);", (valor,))
         banco.commit()
         cursor.close()
         banco.close()
@@ -464,12 +464,12 @@ def inserirCliente(nome, cpf, telefone, endereco, rg):
         print ("erro ao inserir cliente")
         traceback.print_exc ()
 
-def inserirTransportadoras(transportadora, cnpj):
+def inserirTransportadora(transportadora, cnpj):
     try:
         banco = sqlite3.connect ('Litterarius.db')
         cursor = banco.cursor ()
         cursor.execute ("INSERT INTO transportadoras(transportadora, cnpj)"
-                       " VALUES(?,?,?,?,?);", (transportadora, cnpj))
+                       " VALUES(?,?);", (transportadora, cnpj,))
         print ("transportadora inserida com sucesso")
         banco.commit ()
         cursor.close()
@@ -614,14 +614,14 @@ def alterarFuncionario(nome, cpf, telefone, endereco, rg, salario, turno):
         print ("erro ao alterar funcionario")
         traceback.print_exc ()
 
-def alterarTransportadora(id, transportadora):
+def alterarTransportadora(id, transportadora, cnpj):
     try:
         banco = sqlite3.connect ('Litterarius.db')
         cursor = banco.cursor ()
         cursor.execute("UPDATE transportadoras SET "
-                       "transportadora=? "
+                       "transportadora=?, CNPJ=? "
                        "WHERE transportadoras_id=?",
-                       (transportadora, id))
+                       (transportadora, cnpj, id))
         print("transportadora alterada com sucesso")
         banco.commit()
         cursor.close()
@@ -630,13 +630,14 @@ def alterarTransportadora(id, transportadora):
         print("erro ao alterar transportadora")
         traceback.print_exec()
 
-def alterarFornecedor(id, fornecedor):
+def alterarFornecedor(id, fornecedor, cnpj):
     try:
         banco = sqlite3.connect ('Litterarius.db')
         cursor = banco.cursor ()
         cursor.execute("UPDATE fornecedores SET "
-                       "fornecedores=? "
-                       "WHERE fornecedores_id=?")
+                       "fornecedores=?, CNPJ=? "
+                       "WHERE fornecedores_id=?",
+                       (fornecedor, cnpj, id))
         print("fornecedor alterado com sucesso")
         banco.commit()
         cursor.close()
@@ -743,6 +744,19 @@ def excluirFornecedor(id):
         print ("erro ao excluir fornecedor")
         traceback.print_exc ()
 
+def excluirTransportadora(id):
+    try:
+        banco = sqlite3.connect ('Litterarius.db')
+        cursor = banco.cursor ()
+        cursor.execute ("DELETE FROM transportadoras WHERE transportadoras_id=?", (id,))
+        print ("transportadora excluido com sucesso")
+        banco.commit ()
+        cursor.close ()
+        banco.close ()
+
+    except:
+        print ("erro ao excluir transportadora")
+        traceback.print_exc ()
 
 # criarTabelas()
 

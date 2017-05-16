@@ -1,11 +1,9 @@
 from PyQt5.QtSql import QSqlDatabase, QSqlTableModel
-from PyQt5.QtWidgets import QDialog, QTableView
+from PyQt5.QtWidgets import QDialog, QTableView, QAbstractItemView
 
 import Banco
 from UI import MtrGenero_ui
 
-
-# TODO Verificar se está faltando algo para corrigir
 class MtrGenero(QDialog):
     def __init__(self):
         super(MtrGenero, self).__init__()
@@ -25,17 +23,18 @@ class MtrGenero(QDialog):
         # Eventos
         self.ui.btnNovo.clicked.connect (self.clickedNovo)
         self.ui.btnAlterar.clicked.connect (self.clickedAlterar)
+        self.ui.btnExcluir.clicked.connect (self.clickedExcluir)
         self.ui.btnSalvar.clicked.connect (self.clickedSalvar)
         self.ui.btnCancelar.clicked.connect (self.clickedCancelar)
         self.ui.tableView.setSelectionBehavior (QTableView.SelectRows);
-        self.ui.tableView.clicked.connect (self.doubleClicked_table)
+        self.ui.tableView.clicked.connect (self.clicked_table)
 
 
     def habilitarJanelas(self, ativo):
         self.ui.btnNovo.setEnabled(ativo)
         self.ui.btnAlterar.setEnabled(ativo)
         self.ui.btnCancelar.setEnabled(not ativo)
-        self.ui.btnExcluir.setEnabled(not ativo)
+        self.ui.btnExcluir.setEnabled(ativo)
         self.ui.btnSalvar.setEnabled(not ativo)
         # txtId.setEnabled(not ativo)
         self.ui.txtGenero.setEnabled(not ativo)
@@ -53,11 +52,10 @@ class MtrGenero(QDialog):
     def clickedAlterar(self):
         valores=[]
         self.habilitarJanelas(False)
-        op = 'A'
+        self.op = 'A'
 
     def clickedExcluir(self):
         Banco.excluirGenero (self.ui.txtId.text ())
-        self.habilitarJanelas (True)
         self.carregarTable ()
         # txtAutor.setText(str(selection[0]))
 
@@ -89,12 +87,10 @@ class MtrGenero(QDialog):
     def carregarDados(self):
         genero = Banco.selectGeneroById(1)
         if(genero != None):
-            self.ui.txtId.setText(str(genero[0]))
-            self.ui.txtGenero.setText(str(genero[1]))
+            self.ui.txtId.setText(str(genero))
+            self.ui.txtGenero.setText(str(genero))
 
-    def doubleClicked_table(self):
+    def clicked_table(self):
         index = self.ui.tableView.selectedIndexes ()
-        for i in index:
-            print(i)
         self.ui.txtId.setText (str (self.ui.tableView.model().data(index[0])))
         self.ui.txtGenero.setText (str (self.ui.tableView.model().data(index[1])))
