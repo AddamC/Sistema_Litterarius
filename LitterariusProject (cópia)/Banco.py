@@ -486,7 +486,8 @@ def inserirFornecedor(fornecedor, cnpj, transportadora):
         cursor.execute ("INSERT INTO fornecedores(fornecedor, cnpj)"
                        " VALUES(?,?);", (fornecedor, cnpj,))
         cursor.execute (
-            "INSERT INTO fornecedores_transportadoras VALUES ((SELECT fornecedores_id FROM fornecedores WHERE fornecedor=?),?);",
+            "INSERT INTO fornecedores_transportadoras VALUES"
+            " ((SELECT fornecedores_id FROM fornecedores WHERE fornecedor=?),?);",
             (fornecedor, transportadora))
         print ("fornecedor inserido com sucesso")
         banco.commit ()
@@ -630,7 +631,8 @@ def alterarTransportadora(id, transportadora, cnpj):
         print("erro ao alterar transportadora")
         traceback.print_exec()
 
-def alterarFornecedor(id, fornecedor, cnpj):
+# TODO terminar esse segundo update
+def alterarFornecedor(id, fornecedor, cnpj, transportadora):
     try:
         banco = sqlite3.connect ('Litterarius.db')
         cursor = banco.cursor ()
@@ -638,6 +640,11 @@ def alterarFornecedor(id, fornecedor, cnpj):
                        "fornecedores=?, CNPJ=? "
                        "WHERE fornecedores_id=?",
                        (fornecedor, cnpj, id))
+        cursor.execute ("UPDATE fornecedores_transportadoras SET "
+                        "transportadora=(SELECT transportadoras_id FROM transportadoras WHERE transportadora=?) "
+                        "WHERE fornecedores_id=(SELECT fornecedores_id FROM fornecedores WHERE fornecedor=?)",
+                        (transportadora, fornecedor,))
+
         print("fornecedor alterado com sucesso")
         banco.commit()
         cursor.close()

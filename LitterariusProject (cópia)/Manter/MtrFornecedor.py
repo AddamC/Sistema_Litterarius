@@ -1,4 +1,8 @@
-from PyQt5.QtSql import QSqlDatabase, QSqlTableModel
+import traceback
+
+from PyQt5 import Qt
+
+from PyQt5.QtSql import QSqlDatabase, QSqlTableModel, QSqlQueryModel
 from PyQt5.QtWidgets import QDialog, QTableView, QAbstractItemView
 
 import Banco
@@ -29,7 +33,21 @@ class MtrFornecedor(QDialog):
         self.ui.btnCancelar.clicked.connect (self.clickedCancelar)
         self.ui.tableView.setSelectionBehavior (QTableView.SelectRows);
         self.ui.tableView.clicked.connect (self.clicked_table)
-
+        # try:
+        #     db = QSqlDatabase.addDatabase ("QSQLITE");
+        #     db.setDatabaseName ("Litterarius.db");
+        #     if db.open:
+        #         model = QSqlQueryModel ();
+        #         model.setQuery ("SELECT fornecedor FROM fornecedores")
+        #         # model.setHeaderData (0, Qt.Horizontal, tr ("id"));
+        #         # model.setHeaderData (1, Qt.Horizontal, tr ("test"));
+        #
+        #         self.ui.cbTransportadora.setModel (model);
+        #         db.close()
+        #         QSqlDatabase.removeDatabase("Litterarius.db")
+        # # self.ui.cbTransportadora.setView (self.ui.tableView);
+        # except:
+        #     traceback.prin_exec()
 
     def habilitarJanelas(self, ativo):
         self.ui.btnNovo.setEnabled(ativo)
@@ -40,6 +58,7 @@ class MtrFornecedor(QDialog):
         # txtId.setEnabled(not ativo)
         self.ui.txtFornecedor.setEnabled(not ativo)
         self.ui.txtCNPJ.setEnabled (not ativo)
+        self.ui.cbTransportadora.setEnabled(not ativo)
 
     def limparJanelas(self):
         self.ui.txtId.setText("")
@@ -62,7 +81,14 @@ class MtrFornecedor(QDialog):
 
     def clickedSalvar(self):
         if self.op == 'N':
-            Banco.inserirAutor(self.ui.txtAutor.text())
+            Banco.inserirFornecedor(self.ui.txtFornecedor.text(),
+                                    self.ui.txtCNPJ.text(),
+                                    self.ui.cbTransportadora.text())
+        elif self.op == 'A':
+            Banco.alterarFornecedor(self.ui.txtId.text(),
+                                    self.ui.txtFornecedor.text(),
+                                    self.ui.txtCNPJ.text(),
+                                    self.ui.cbTransportadora.text())
         self.habilitarJanelas(True)
         self.carregarTable()
 
@@ -76,12 +102,18 @@ class MtrFornecedor(QDialog):
         conexao = db.connectionName()
         if db.open():
             model = QSqlTableModel (self, db)
+            model2 = QSqlTableModel (self, db)
             model.setTable ("fornecedores")
             model.select ()
             self.ui.tableView.setModel (model)
             self.ui.tableView.show ()
+            model2.setTable("transportadoras")
+            model2.select()
+            self.ui.cbTransportadora.setModel(model2)
+            self.ui.cbTransportadora.setModelColumn (1)
         db.close()
         QSqlDatabase().removeDatabase('Litterarius.db')
+
 
     def carregarDados(self):
         autor = Banco.selectAutorById(1)
@@ -95,13 +127,3 @@ class MtrFornecedor(QDialog):
         self.ui.txtId.setText (str (self.ui.tableView.model().data(index[0])))
         self.ui.txtFornecedor.setText (str (self.ui.tableView.model().data(index[1])))
         self.ui.txtCNPJ.setText (str (self.ui.tableView.model().data(index[2])))
-		
-
-# TODO implementar esse código mais tarde 
-	model = QSqlQueryModel();
-	model.setQuery("SELECT fornecedores_id, fornecedor FROM fornecedores");
-	model.setHeaderData(0, Qt.Horizontal, tr("id"));
-	model.setHeaderData(1, Qt.Horizontal, tr("test"));	
- 
-	cbTransportadora.setModel(model);
-	cbTransportadora.setView(tableView);
