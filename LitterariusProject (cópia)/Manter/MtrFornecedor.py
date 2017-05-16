@@ -95,3 +95,13 @@ class MtrFornecedor(QDialog):
         self.ui.txtId.setText (str (self.ui.tableView.model().data(index[0])))
         self.ui.txtFornecedor.setText (str (self.ui.tableView.model().data(index[1])))
         self.ui.txtCNPJ.setText (str (self.ui.tableView.model().data(index[2])))
+		
+
+# TODO implementar esse código mais tarde 
+	model = QSqlQueryModel();
+	model.setQuery("SELECT fornecedores_id, fornecedor FROM fornecedores");
+	model.setHeaderData(0, Qt.Horizontal, tr("id"));
+	model.setHeaderData(1, Qt.Horizontal, tr("test"));	
+ 
+	cbTransportadora.setModel(model);
+	cbTransportadora.setView(tableView);
