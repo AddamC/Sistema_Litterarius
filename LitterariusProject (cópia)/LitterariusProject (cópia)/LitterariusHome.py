@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QDialog, QMdiSubWindow
 
-import Litterarius_ui
-from Manter_ui import Manter
+from UI import Litterarius_ui
+from UI.Manter_ui import Manter
 
 
 class LitterariusHome(QDialog):
@@ -15,8 +15,10 @@ class LitterariusHome(QDialog):
         manter = Manter ()
         janelaManter.setWidget (manter)
         janelaManter.setGeometry (0, 0, 780, 500)
+
         ui.mdiArea.addSubWindow (janelaManter)
-        janelaManter.show ()
+
+        # janelaManter.show ()
 
         self.show()
 
