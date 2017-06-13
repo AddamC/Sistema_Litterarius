@@ -28,9 +28,9 @@ class Ui_Form(object):
         self.txtPrecoCompra = QtWidgets.QLineEdit(self.gridLayoutWidget)
         self.txtPrecoCompra.setObjectName("txtPrecoCompra")
         self.gridLayout.addWidget(self.txtPrecoCompra, 2, 2, 1, 1)
-        self.txtCompra = QtWidgets.QLineEdit(self.gridLayoutWidget)
-        self.txtCompra.setObjectName("txtCompra")
-        self.gridLayout.addWidget(self.txtCompra, 1, 2, 1, 1)
+        self.txtCompraId = QtWidgets.QLineEdit(self.gridLayoutWidget)
+        self.txtCompraId.setObjectName("txtCompraId")
+        self.gridLayout.addWidget(self.txtCompraId, 1, 2, 1, 1)
         self.label_6 = QtWidgets.QLabel(self.gridLayoutWidget)
         self.label_6.setObjectName("label_6")
         self.gridLayout.addWidget(self.label_6, 3, 4, 1, 1)
@@ -85,6 +85,12 @@ class Ui_Form(object):
         self.gridLayout.addWidget(self.lblDataPago, 4, 4, 1, 1)
         spacerItem5 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout.addItem(spacerItem5, 0, 2, 1, 1)
+        self.btnVoltar = QtWidgets.QPushButton(self.gridLayoutWidget)
+        self.btnVoltar.setObjectName("btnVoltar")
+        self.gridLayout.addWidget(self.btnVoltar, 6, 4, 1, 1)
+        self.btnConfirmar = QtWidgets.QPushButton(self.gridLayoutWidget)
+        self.btnConfirmar.setObjectName("btnConfirmar")
+        self.gridLayout.addWidget(self.btnConfirmar, 6, 5, 1, 1)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -102,6 +108,8 @@ class Ui_Form(object):
         self.label_3.setText(_translate("Form", "Data da compra realizada"))
         self.label_8.setText(_translate("Form", "Pagamento"))
         self.lblDataPago.setText(_translate("Form", "TextLabel"))
+        self.btnVoltar.setText(_translate("Form", "Voltar"))
+        self.btnConfirmar.setText(_translate("Form", "Confirmar"))
 
 
 if __name__ == "__main__":

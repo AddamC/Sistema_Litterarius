@@ -80,7 +80,7 @@ class MtrLivro(QDialog):
     def clickedAlterar(self):
         valores=[]
         self.habilitarJanelas(False)
-        op = 'A'
+        self.op = 'A'
 
         # txtEditora.setText(str(selection[0]))
 
@@ -89,25 +89,32 @@ class MtrLivro(QDialog):
         self.carregarTable()
 
     def clickedSalvar(self):
+        contador = 0
         if self.op == 'N':
             contador = 0
             Banco.inserirLivro(self.ui.txtTitulo.text(), self.ui.cbEditora.currentText(),
                                self.ui.txtISBN.text(), self.ui.txtQTDE.text(),
                                self.ui.txtValor.text(), self.ui.ckbConsignado.isChecked())
 
-        # verificar se tem generos a inserir
-        for genero in self.movLivroGen.getListWidgetItens():
-            contador+=1
-        if contador > 0:
+            # verificar se tem generos a inserir
             for genero in self.movLivroGen.getListWidgetItens():
-                Banco.inserirLivrosGeneros(self.ui.txtId.text(), genero.text())
+                contador+=1
+            if contador > 0:
+                for genero in self.movLivroGen.getListWidgetItens():
+                    Banco.inserirLivrosGeneros(self.ui.txtId.text(), genero.text())
 
-        #  verificar se tem autores a inserir
-        for autor in self.movLivroAutor.getListWidgetItens():
-            contador+=1
-        if contador > 0:
+            #  verificar se tem autores a inserir
             for autor in self.movLivroAutor.getListWidgetItens():
-                Banco.inserirLivrosAutores(self.ui.txtId.text(), autor.text())
+                contador+=1
+            if contador > 0:
+                for autor in self.movLivroAutor.getListWidgetItens():
+                    Banco.inserirLivrosAutores(self.ui.txtId.text(), autor.text())
+
+        elif self.op == 'A':
+            Banco.alterarLivro(self.ui.txtId.text(), self.ui.txtTitulo.text(),
+                               self.ui.cbEditora.currentText(),
+                               self.ui.txtISBN.text(), self.ui.txtQTDE.text(),
+                               self.ui.txtValor.text(), self.ui.ckbConsignado.isChecked())
 
         self.habilitarJanelas(True)
         self.carregarTable()
@@ -123,7 +130,8 @@ class MtrLivro(QDialog):
         if db.open():
             query = QSqlQueryModel(self)
             query.setQuery("SELECT"
-                           " livros_id, titulo, editoras.editora, isbn, qtde_estoque, vl_unitario, consignado"
+                           " livros_id, titulo, editoras.editora,"
+                           " isbn, qtde_estoque, vl_unitario, consignado"
                            " FROM livros"
                            " INNER JOIN editoras ON livros.editoras_fk = editoras.editoras_id")
             model = QSqlTableModel (self, db)

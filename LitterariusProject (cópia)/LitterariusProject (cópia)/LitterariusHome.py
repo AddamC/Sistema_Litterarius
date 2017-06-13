@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QDialog, QMdiSubWindow
 
 from UI import Litterarius_ui
 from UI.Manter_ui import Manter
+from Movimentacao.MenuMovimentacao import MenuMovimentacao
 
 
 class LitterariusHome(QDialog):
@@ -13,7 +14,8 @@ class LitterariusHome(QDialog):
 
         janelaManter = QMdiSubWindow ()
         manter = Manter ()
-        janelaManter.setWidget (manter)
+        movimentacao = MenuMovimentacao()
+        janelaManter.setWidget (movimentacao)
         janelaManter.setGeometry (0, 0, 780, 500)
 
         ui.mdiArea.addSubWindow (janelaManter)

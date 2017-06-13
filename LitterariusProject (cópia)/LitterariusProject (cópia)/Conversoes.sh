@@ -2,6 +2,8 @@ cd /home/addam/SistLitterarius/UIs/
 
 pyuic5 -x LitterariusUI.ui -o Litterarius_ui.py
 
+pyuic5 -x MenuLitterarius.ui -o MenuLitterarius_ui.py
+
 pyuic5 -x MtrAutor2.ui -o MtrAutor_ui.py
 
 pyuic5 -x MtrEditora.ui -o MtrEditora_ui.py
@@ -32,7 +34,17 @@ pyuic5 -x movLivroGen.ui -o movLivroGen_ui.py
 
 pyuic5 -x movLivroAutor.ui -o movLivroAutor_ui.py
 
+pyuic5 -x Movimentacao.ui -o Movimentacao_ui.py
+
+pyuic5 -x BuscarLivro.ui -o BuscarLivro_ui.py
+
+pyuic5 -x BuscarCliente.ui -o BuscarCliente_ui.py
+
+pyuic5 -x ConfPagamento.ui -o ConfPagamento_ui.py
+
 mv Litterarius_ui.py /home/addam/Sistema_Litterarius/LitterariusProject\ \(cópia\)/UI
+
+mv MenuLitterarius_ui.py /home/addam/Sistema_Litterarius/LitterariusProject\ \(cópia\)/UI
 
 mv MtrTransportadora_ui.py /home/addam/Sistema_Litterarius/LitterariusProject\ \(cópia\)/UI
 
@@ -63,6 +75,14 @@ mv movFornTransp_ui.py /home/addam/Sistema_Litterarius/LitterariusProject\ \(có
 mv movLivroGen_ui.py /home/addam/Sistema_Litterarius/LitterariusProject\ \(cópia\)/UI
 
 mv movLivroAutor_ui.py /home/addam/Sistema_Litterarius/LitterariusProject\ \(cópia\)/UI
+
+mv Movimentacao_ui.py /home/addam/Sistema_Litterarius/LitterariusProject\ \(cópia\)/UI
+
+mv BuscarLivro_ui.py /home/addam/Sistema_Litterarius/LitterariusProject\ \(cópia\)/UI
+
+mv BuscarCliente_ui.py /home/addam/Sistema_Litterarius/LitterariusProject\ \(cópia\)/UI
+
+mv ConfPagamento_ui.py /home/addam/Sistema_Litterarius/LitterariusProject\ \(cópia\)/UI
 
 read -n1 -r -p "Press any key to continue..." key
 

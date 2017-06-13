@@ -1,6 +1,8 @@
 import sqlite3
 import traceback
 
+# TODO: Limpar dados apos feita a compra
+# TODO: evitar de fazer compra com mais do que tem no estoque
 def criarTabelas():
 
     banco = sqlite3.connect('Litterarius.db')
@@ -35,7 +37,7 @@ def criarTabelas():
                        "titulo                      VARCHAR(50) NOT NULL UNIQUE,"
                        "editoras_fk                 INTEGER NOT NULL,"
                        "ISBN                        VARCHAR(20),"
-                       "qtde_estoque                NUMERIC,"
+                       "qtde_estoque                NUMERIC NOT NULL,"
                        "vl_unitario                 REAL NOT NULL,"
                        "consignado                  BOOLEAN,"
                        "FOREIGN KEY(editoras_fk)    REFERENCES editoras(editoras_id));")
@@ -45,8 +47,8 @@ def criarTabelas():
 
     try:
         cursor.execute ("CREATE TABLE livros_autores("
-                       "livros_id                                INTEGER,"
-                       "autores_id                               INTEGER,"
+                       "livros_id                                INTEGER NOT NULL,"
+                       "autores_id                               INTEGER NOT NULL,"
                        "FOREIGN KEY(livros_id)                   REFERENCES livros(livros_id),"
                        "FOREIGN KEY(autores_id)                  REFERENCES autores(autores_id),"
                        "PRIMARY KEY(livros_id, autores_id));")
@@ -108,7 +110,7 @@ def criarTabelas():
 
     try:
         cursor.execute ("CREATE TABLE funcionarios("
-                       "funionarios_id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
+                       "funcionarios_id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
                        "nome                VARCHAR(100) NOT NULL,"
                        "cpf                 VARCHAR(12) NOT NULL,"
                        "telefone            VARCHAR(20) NOT NULL,"
@@ -123,7 +125,7 @@ def criarTabelas():
     try:
         cursor.execute ("CREATE TABLE vendas("
                        "vendas_id                     INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
-                       "data                          DATETIME NOT NULL,"
+                       "dataVenda                     DATETIME NOT NULL,"
                        "clientes_fk                   INTEGER NOT NULL,"
                        "funcionarios_fk               INTEGER NOT NULL,"
                        "FOREIGN KEY(clientes_fk)      REFERENCES clientes(clientes_id),"
@@ -150,7 +152,7 @@ def criarTabelas():
     try:
         cursor.execute ("CREATE TABLE compras("
                        "compras_id                           INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
-                       "data                                 DATETIME NOT NULL,"
+                       "dataCompra                           DATETIME NOT NULL,"
                        "fornecedores_fk                      INTEGER NOT NULL,"
                        "FOREIGN KEY(fornecedores_fk)         REFERENCES fornecedores(fornecedores_id));")
         print("tabela compras criada com sucesso")
@@ -161,7 +163,8 @@ def criarTabelas():
         cursor.execute("CREATE TABLE det_compras("
                       "livros_id                            INTEGER NOT NULL,"
                       "compras_id                           INTEGER NOT NULL,"
-                      "data                                 DATETIME NOT NULL,"
+                      "qtde                                 NUMERIC NOT NULL,"
+                      "valor                                REAL NOT NULL"
                       "FOREIGN KEY(livros_id)               REFERENCES livros(livros_id),"
                       "FOREIGN KEY(compras_id)              REFERENCES compras(compras_id)"
                       "PRIMARY KEY(livros_id, compras_id));")
@@ -176,7 +179,7 @@ def criarTabelas():
                       "data_vencimento                           DATETIME NOT NULL,"
                       "vl_parcela                                REAL NOT NULL,"
                       "pago                                      BOOL NOT NULL,"
-                      "FOREIGN KEY(compras_id)                   REFERENCES vendas(vendas_id),"
+                      "FOREIGN KEY(compras_id)                   REFERENCES compras(compras_id),"
                       "PRIMARY KEY(compras_id, parcelas_id));")
         print("tabela pagamentos criada com sucesso")
     except:
@@ -185,6 +188,21 @@ def criarTabelas():
     cursor.close()
     banco.close()
 
+    try:
+        cursor.execute("CREATE TABLE recebimentos("
+                      "vendas_id                                 INTEGER NOT NULL,"
+                      "parcelas_id                               INTEGER NOT NULL,"
+                      "data_vencimento                           DATETIME NOT NULL,"
+                      "vl_parcela                                REAL NOT NULL,"
+                      "pago                                      BOOL NOT NULL,"
+                      "FOREIGN KEY(vendas_id)                    REFERENCES vendas(vendas_id),"
+                      "PRIMARY KEY(vendas_id, parcelas_id));")
+        print("tabela recebimentos criada com sucesso")
+    except:
+        print("erro ao criar tabela recebimentos")
+
+    cursor.close()
+    banco.close()
 
 def selectAll(tabela):
     banco = sqlite3.connect ("Litterarius.db")
@@ -332,7 +350,7 @@ def selectFuncionarioById(id):
     func = []
     banco = sqlite3.connect ("Litterarius.db")
     cursor = banco.cursor ()
-    query = "SELECT * FROM funcionarios WHERE funionarios_id=" + str (id)
+    query = "SELECT * FROM funcionarios WHERE funcionarios_id=" + str (id)
     dados = cursor.execute (query)
     for i in dados.fetchall ():
         func.append (i)
@@ -370,6 +388,7 @@ def selectTransporadoraById(id):
 
     return transportadora[0]
 
+# Inserção
 def inserirAutor(valor):
     try:
         banco = sqlite3.connect("Litterarius.db")
@@ -381,7 +400,7 @@ def inserirAutor(valor):
         print("autor inserido com sucesso")
     except:
         print("erro ao inserir autor")
-        traceback.print_exc ()
+        traceback.print_exec ()
 
 def inserirEditora(valor):
     try:
@@ -550,12 +569,12 @@ def inserirLivrosGeneros(livro, genero):
         print ("erro ao inserir livro com genero")
         traceback.print_exc ()
 
-def inserirLivrosAutor(livro, autor):
+def inserirLivrosAutores(livro, autor):
     try:
         banco = sqlite3.connect ('Litterarius.db')
         cursor = banco.cursor ()
         cursor.execute ("INSERT INTO livros_autores(livros_id, autores_id)"
-                        " VALUES(?,(SELECT autores_id FROM autores WHERE autor=?));", (livro, auto))
+                        " VALUES(?,(SELECT autores_id FROM autores WHERE autor=?));", (livro, autor))
         print ("livro com autor inserido com sucesso")
         banco.commit ()
         cursor.close ()
@@ -564,6 +583,8 @@ def inserirLivrosAutor(livro, autor):
     except:
         print ("erro ao inserir livro com autor")
         traceback.print_exc ()
+
+
 
 # TODO Updates
 
@@ -610,22 +631,23 @@ def alterarEditora(id, editora):
         print ("erro ao alterar editora")
         traceback.print_exc ()
 
-def alterarLivro(id,titulo,editora,isbn,qtde,valor):
+def alterarLivro(id, titulo, editora, isbn, qtde, vlr, consignado):
     try:
         banco = sqlite3.connect ('Litterarius.db')
         cursor = banco.cursor ()
         cursor.execute ("UPDATE livros SET "
-                        "titulo=?, editora_fk=?, ISBN=?, "
-                        "qtde_estoque=?, vl_unitario=? "
-                        "WHERE autores_id=?",
-                        (titulo, editora, isbn, qtde, valor, id,))
-        print ("livro alterado com sucesso")
+                        "titulo=?, "
+                        "editoras_fk = (SELECT editoras_id FROM editoras WHERE editora=?),"
+                        " ISBN=?, qtde_estoque=?, vl_unitario=? "
+                        "WHERE livros_id=?",
+                        (titulo, editora, isbn, qtde, vlr, id,))
+        print ("livro: " + str(titulo) + " alterado com sucesso")
         banco.commit ()
         cursor.close()
         banco.close ()
 
     except:
-        print ("erro ao alterar livro")
+        print ("erro ao alterar livro " + str(titulo))
         traceback.print_exc ()
 
 def alterarCliente(id, nome, cpf, telefone, endereco, rg):
@@ -679,6 +701,41 @@ def alterarTransportadora(id, transportadora, cnpj):
     except:
         print("erro ao alterar transportadora")
         traceback.print_exec()
+
+def alterarRecebimento():
+    try:
+        banco = sqlite3.connect ('Litterarius.db')
+        cursor = banco.cursor ()
+        cursor.execute ("UPDATE recebimentos SET "
+                        " pago=?"
+                        " WHERE recebimentos_id=? AND"
+                        " parcelas_id = ?",
+                        ())
+        print ("parcela alterada com sucesso")
+        banco.commit ()
+        cursor.close ()
+        banco.close ()
+    except:
+        print ("erro ao alterar parcela")
+        traceback.print_exec ()
+
+def alterarPagamento():
+    try:
+        banco = sqlite3.connect ('Litterarius.db')
+        cursor = banco.cursor ()
+        cursor.execute ("UPDATE pagamentos SET "
+                        " pago=?"
+                        " WHERE pagamentos_id=? AND"
+                        " parcelas_id = ?",
+                        ())
+        print ("parcela alterada com sucesso")
+        banco.commit ()
+        cursor.close ()
+        banco.close ()
+    except:
+        print ("erro ao alterar parcela")
+        traceback.print_exec ()
+
 
 # TODO terminar esse segundo update
 def alterarFornecedor(id, fornecedor, cnpj, transportadora):
@@ -814,25 +871,119 @@ def excluirTransportadora(id):
         print ("erro ao excluir transportadora")
         traceback.print_exc ()
 
-# criarTabelas()
+# Movimentações
 
-# inserirAutor("maze sei la o que")
-# inserirAutor("yxyxy")
-#
-# inserirEditora("edit1")
-# inserirEditora("edit2")
+def inserirDetVenda(qtde, valor, livro):
+    try:
+        banco = sqlite3.connect ('Litterarius.db')
+        cursor = banco.cursor ()
+        cursor.execute ("INSERT INTO det_Vendas VALUES(%s, %s, "
+                        " (SELECT max(vendas_id) FROM vendas),"
+                        " (SELECT livros_id FROM livros WHERE titulo='%s'));"
+                        % (qtde, valor, livro))
+        cursor.execute("UPDATE livros SET qtde_estoque="
+                       "(SELECT qtde_estoque - %s FROM livros WHERE titulo='%s')"
+                       " WHERE titulo='%s'"
+                       % (qtde, livro, livro))
+        print ("detalhe de Venda inserida com sucesso")
+        banco.commit ()
+        cursor.close ()
+        banco.close ()
 
-# qtdeLivros = input("Informe a qtde de livros para cadastrar: ")
-# for i in range(int(qtdeLivros)):
-#     livro = input("informe o livro que deseja incluir: ")
-#     inserirLivro(livro, i)
-#
-# livros = cursor.execute("SELECT * FROM editoras")
-# livros = cursor.execute("SELECT * FROM autores")
-# valores = []
-# for i in livros.fetchall():
-#     valores.append(i)
-#
-# print(valores)
-#
-# banco.close()
+    except:
+        print ("erro ao inserir detalhe de venda")
+        traceback.print_exc ()
+
+def inserirVenda(cliente, funcionario, preco):
+    try:
+        banco = sqlite3.connect ('Litterarius.db')
+        cursor = banco.cursor ()
+        cursor.execute ("INSERT INTO vendas(dataVenda, precoVenda,"
+                        " clientes_fk, funcionarios_fk)"
+                        " VALUES(datetime('now'), %s,"
+                        " (SELECT clientes_id FROM clientes WHERE nome='%s'),"
+                        " (SELECT funcionarios_id FROM funcionarios WHERE nome='%s'));"
+                        % (preco, cliente, funcionario))
+        print ("Venda inserida com sucesso")
+        banco.commit ()
+        cursor.close ()
+        banco.close ()
+
+    except:
+        print ("erro ao inserir venda")
+        traceback.print_exc ()
+
+def inserirDetCompra(qtde, valor, livro):
+    try:
+        banco = sqlite3.connect ('Litterarius.db')
+        cursor = banco.cursor ()
+        cursor.execute ("INSERT INTO det_compras VALUES(%s, %s, "
+                        " (SELECT max(compras_id) FROM compras),"
+                        " (SELECT livros_id FROM livros WHERE titulo='%s'));"
+                        % (qtde, valor, livro))
+        cursor.execute ("UPDATE livros SET qtde_estoque="
+                        "(SELECT qtde_estoque + %s FROM livros WHERE titulo='%s')"
+                        " WHERE titulo='%s'"
+                        % (qtde, livro, livro))
+        print ("detalhe de Compra inserida com sucesso")
+        banco.commit ()
+        cursor.close ()
+        banco.close ()
+
+    except:
+        print ("erro ao inserir detalhe de compra")
+        traceback.print_exc ()
+
+def inserirCompra(fornecedor, preco):
+    try:
+        banco = sqlite3.connect ('Litterarius.db')
+        cursor = banco.cursor ()
+        cursor.execute ("INSERT INTO compras(dataCompra, precoCompra, fornecedores_fk)"
+                        " VALUES(datetime('now'), %s,"
+                        " (SELECT fornecedores_id FROM fornecedores"
+                        " WHERE fornecedor='%s'));"
+                        % (preco, fornecedor))
+        print ("Compra realizada com sucesso")
+        banco.commit ()
+        cursor.close ()
+        banco.close ()
+
+    except:
+        print ("erro ao realizar compra")
+        traceback.print_exc ()
+
+def gerarRecebimento(parcela, valor):
+    try:
+        banco = sqlite3.connect ('Litterarius.db')
+        cursor = banco.cursor ()
+        cursor.execute ("INSERT INTO recebimentos"
+                        " VALUES("
+                        "(SELECT max(vendas_id) FROM vendas), %s,"
+                        " datetime('now'), %s, 0);"
+                        % (parcela, valor))
+        print ("recebimento gerado com sucesso")
+        banco.commit ()
+        cursor.close ()
+        banco.close ()
+
+    except:
+        print ("erro ao gerar recebimento")
+        traceback.print_exc ()
+
+def gerarPagamento(parcela, valor):
+    try:
+        banco = sqlite3.connect ('Litterarius.db')
+        cursor = banco.cursor ()
+        cursor.execute ("INSERT INTO pagamentos"
+                        " VALUES("
+                        "(SELECT max(compras_id) FROM compras), %s,"
+                        " datetime('now'), %s, 0);"
+                        % (parcela, valor))
+        print ("pagamento gerado com sucesso")
+        banco.commit ()
+        cursor.close ()
+        banco.close ()
+
+    except:
+        print ("erro ao gerar pagamento")
+        traceback.print_exc ()
