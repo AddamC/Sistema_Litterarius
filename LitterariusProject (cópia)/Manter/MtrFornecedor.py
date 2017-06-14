@@ -29,6 +29,7 @@ class MtrFornecedor(QDialog):
         # Eventos
         self.ui.btnNovo.clicked.connect (self.clickedNovo)
         self.ui.btnAlterar.clicked.connect (self.clickedAlterar)
+        self.ui.btnExcluir.clicked.connect (self.clickedExcluir)
         self.ui.btnSalvar.clicked.connect (self.clickedSalvar)
         self.ui.btnCancelar.clicked.connect (self.clickedCancelar)
         self.ui.tableView.setSelectionBehavior (QTableView.SelectRows);
@@ -42,10 +43,10 @@ class MtrFornecedor(QDialog):
         #         # model.setHeaderData (0, Qt.Horizontal, tr ("id"));
         #         # model.setHeaderData (1, Qt.Horizontal, tr ("test"));
         #
-        #         self.ui.cbTransportadora.setModel (model);
+        #
         #         db.close()
         #         QSqlDatabase.removeDatabase("Litterarius.db")
-        # # self.ui.cbTransportadora.setView (self.ui.tableView);
+
         # except:
         #     traceback.prin_exec()
 
@@ -58,12 +59,11 @@ class MtrFornecedor(QDialog):
         # txtId.setEnabled(not ativo)
         self.ui.txtFornecedor.setEnabled(not ativo)
         self.ui.txtCNPJ.setEnabled (not ativo)
-        self.ui.cbTransportadora.setEnabled(not ativo)
 
     def limparJanelas(self):
-        self.ui.txtId.setText("")
-        self.ui.txtFornecedor.setText("")
-        self.ui.txtCNPJ.setText("")
+        self.ui.txtId.setText ("")
+        self.ui.txtFornecedor.setText ("")
+        self.ui.txtCNPJ.setText ("")
 
     def clickedNovo(self):
         self.habilitarJanelas(False)
@@ -75,20 +75,22 @@ class MtrFornecedor(QDialog):
     def clickedAlterar(self):
         valores=[]
         self.habilitarJanelas(False)
-        op = 'A'
+        self.op = 'A'
 
-        # txtAutor.setText(str(selection[0]))
+    def clickedExcluir(self):
+        Banco.excluirFornecedor(self.ui.txtId.text())
+        self.carregarTable()
 
     def clickedSalvar(self):
         if self.op == 'N':
             Banco.inserirFornecedor(self.ui.txtFornecedor.text(),
-                                    self.ui.txtCNPJ.text(),
-                                    self.ui.cbTransportadora.text())
+                                    self.ui.txtCNPJ.text())
+            # Banco.inserirFornecedorTransportadora()
         elif self.op == 'A':
             Banco.alterarFornecedor(self.ui.txtId.text(),
                                     self.ui.txtFornecedor.text(),
-                                    self.ui.txtCNPJ.text(),
-                                    self.ui.cbTransportadora.text())
+                                    self.ui.txtCNPJ.text(),)
+
         self.habilitarJanelas(True)
         self.carregarTable()
 
@@ -109,8 +111,6 @@ class MtrFornecedor(QDialog):
             self.ui.tableView.show ()
             model2.setTable("transportadoras")
             model2.select()
-            self.ui.cbTransportadora.setModel(model2)
-            self.ui.cbTransportadora.setModelColumn (1)
         db.close()
         QSqlDatabase().removeDatabase('Litterarius.db')
 
