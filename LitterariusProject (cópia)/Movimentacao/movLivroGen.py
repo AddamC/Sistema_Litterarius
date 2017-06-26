@@ -1,3 +1,4 @@
+import sqlite3
 from PyQt5.QtGui import QStandardItemModel
 from PyQt5.QtSql import QSqlDatabase, QSqlTableModel, QSqlQueryModel
 from PyQt5.QtWidgets import QDialog, QTableView
@@ -16,6 +17,22 @@ class MovLivroGen(QDialog):
         # self.livro = livroId
 
         self.carregarListView()
+
+    def limparLista(self):
+        self.ui.lwLivroGenero.clear()
+
+
+    def addFromDB(self, idLivro):
+        self.limparLista()
+        banco = sqlite3.connect ('Litterarius.db')
+        cursor = banco.cursor ()
+        generos = cursor.execute("SELECT generos.genero FROM livros_generos "
+                       " inner join generos "
+                       " on generos.generos_id = livros_generos.generos_id "
+                       " where livros_generos.livros_id = 1;")
+        for i in generos.fetchall():
+            print(i)
+            self.ui.lwLivroGenero.addItem(i)
 
     def carregarListView(self):
         db = QSqlDatabase ().addDatabase ('QSQLITE')

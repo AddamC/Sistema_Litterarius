@@ -127,7 +127,7 @@ class Ui_Dialog(object):
         self.gridLayout_3.addWidget(self.Manter, 1, 0, 1, 1)
 
         self.retranslateUi(Dialog)
-        self.Manter.setCurrentIndex(2)
+        self.Manter.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):

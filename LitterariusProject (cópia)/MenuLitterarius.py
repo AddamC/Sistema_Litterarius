@@ -7,14 +7,11 @@ from PyQt5.QtCore import QUrl
 from PyQt5.QtPrintSupport import QPrinter
 from PyQt5.QtWidgets import QDialog, QMdiSubWindow
 
-import htmltopdf
 from Movimentacao.MovCompra import Compra
 from Movimentacao.MovPagamento import Pagamento
 from Movimentacao.MovRecebimento import Recebimento
 from Movimentacao.MovVenda import Venda
 from UI import MenuLitterarius_ui
-from UI.Manter_ui import Manter
-from Movimentacao.MenuMovimentacao import MenuMovimentacao
 
 from Manter.MtrGenero import MtrGenero
 from Manter.MtrAutor import MtrAutor
@@ -25,14 +22,14 @@ from Manter.MtrFuncionario import MtrFuncionario
 from Manter.MtrLivro import MtrLivro
 from Manter.MtrTransportadora import MtrTransportadora
 
-from jinja2 import Environment, PackageLoader
-
 class MenuLitterarius(QDialog):
     def __init__(self):
         super(MenuLitterarius, self).__init__()
         self.ui = MenuLitterarius_ui.Ui_Dialog ()
         self.ui.setupUi(self)
         self.show()
+
+        self.ui.btnLivros.setFocus()
 
         self.carregarComboBox()
 
@@ -86,12 +83,14 @@ class MenuLitterarius(QDialog):
         relatorio = self.ui.cbxRel.currentText()
         tipo = self.ui.cbxTipo.currentText()
 
-        if not relatorio == 'Livros':
+        if relatorio == 'Livros':
             df = pd.read_sql_query (" SELECT livros.titulo, generos.genero FROM livros_generos "
                                     " INNER JOIN livros "
                                     " on livros_generos.livros_id = livros.livros_id"
                                     " INNER JOIN generos "
                                     " on livros_generos.generos_id = generos.generos_id", conn)
+        elif relatorio == 'Editoras':
+            df = pd.read_sql_query (" SELECT * FROM editoras")
 
         try:
             if not self.ui.txtSql.text () == '':
@@ -99,36 +98,44 @@ class MenuLitterarius(QDialog):
             elif self.ui.txtRel.text () == '':
                 return
             else:
+
                 df = pd.read_sql_query (" SELECT * FROM %s " % (self.ui.txtRel.text ()), conn)
         except:
             return
 
-        s = df.style.highlight_null().render().split('\n')[:10]
-        self.html = df.to_html
+        self.html = df.to_html()
         self.ui.webView.setHtml (self.html)
 
     def clickLivro(self):
+        self.mtrLivro.atualizar()
         self.mtrLivro.exec_ ()
 
     def clickAutor(self):
+        self.mtrAutor.atualizar()
         self.mtrAutor.exec_ ()
 
     def clickEditora(self):
+        self.mtrEditora.atualizar()
         self.mtrEditora.exec_ ()
 
     def clickCliente(self):
+        self.mtrCliente.atualizar()
         self.mtrCliente.exec_ ()
 
     def clickFuncionario(self):
+        self.mtrFunc.atualizar()
         self.mtrFunc.exec_ ()
 
     def clickFornecedor(self):
+        self.mtrForn.atualizar()
         self.mtrForn.exec_ ()
 
     def clickTransportadora(self):
+        self.mtrTransp.atualizar()
         self.mtrTransp.exec_ ()
 
     def clickGenero(self):
+        self.mtrGenero.atualizar()
         self.mtrGenero.exec_ ()
 
     def clickCompra(self):
@@ -146,5 +153,7 @@ class MenuLitterarius(QDialog):
         self.recebimento.exec_()
 
     def carregarComboBox(self):
+        self.ui.cbxRel.addItem('Autores')
         self.ui.cbxRel.addItem('Livros')
+        self.ui.cbxRel.addItem('Editoras')
         self.ui.cbxTipo.addItem('Por Categoria')

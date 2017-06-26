@@ -17,6 +17,10 @@ class MovLivroAutor(QDialog):
 
         # Eventos
         # self.ui.btn
+
+    def limparLista(self):
+        self.ui.lwLivroAutor.clear()
+
     def carregarListView(self):
         db = QSqlDatabase ().addDatabase ('QSQLITE')
         db.setDatabaseName ('Litterarius.db')

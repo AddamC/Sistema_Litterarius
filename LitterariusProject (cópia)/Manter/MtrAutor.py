@@ -30,6 +30,10 @@ class MtrAutor(QDialog):
         self.ui.tableView.setSelectionBehavior (QTableView.SelectRows);
         self.ui.tableView.clicked.connect (self.clicked_table)
 
+    def atualizar(self):
+        self.carregarTable ()
+        self.carregarDados ()
+        # self.exec_()
 
     def habilitarJanelas(self, ativo):
         self.ui.btnNovo.setEnabled(ativo)

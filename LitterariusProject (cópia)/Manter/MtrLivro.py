@@ -40,10 +40,18 @@ class MtrLivro(QDialog):
         self.movLivroGen = MovLivroGen()
         self.movLivroAutor = MovLivroAutor()
 
+    def atualizar(self):
+        self.carregarTable()
+        self.carregarDados()
+        # self.exec_()
+
     def clickedLivroGen(self):
+        self.movLivroGen.limparLista()
         self.movLivroGen.exec_()
 
     def clickedLivroAutor(self):
+        # if self.op == 'N':
+        self.movLivroAutor.limparLista()
         self.movLivroAutor.exec_()
 
     def habilitarJanelas(self, ativo):
