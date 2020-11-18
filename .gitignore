@@ -1,0 +1,4 @@
+/HTMLs
+*/__pycache__
+*.pyc
+*.db
